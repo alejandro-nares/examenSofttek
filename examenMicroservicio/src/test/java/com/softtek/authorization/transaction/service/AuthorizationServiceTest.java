@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.softtek.authorization.transaction.commons.util.ServiceException;
 import com.softtek.authorization.transaction.model.dto.AuthorizationDto;
 
 import lombok.extern.log4j.Log4j;
@@ -21,7 +20,7 @@ public class AuthorizationServiceTest {
 	@Autowired AuthorizationServiceImpl authorizationServiceImpl;
 	
 	@Test
-	public void saveAutorization() throws ServiceException {
+	public void saveAutorization() {
 		String response = null;
 		
 		AuthorizationDto authorizationDto = new AuthorizationDto();
@@ -38,7 +37,7 @@ public class AuthorizationServiceTest {
 	}
 	
 	@Test
-	public void updateAutorization() throws ServiceException {
+	public void updateAutorization() {
 		String response = null;
 		
 		AuthorizationDto authorizationDto = new AuthorizationDto();

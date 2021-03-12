@@ -30,13 +30,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		
 		String result = null;
 		JsonObjectBuilder jsonObject = null;
+		String validate = null;
 		
 		
 		//Validations
-		ValidatorHelper.validateObjectAndThrowException(authorizationDto.getId(), "id", HttpStatus.CONFLICT);
-		ValidatorHelper.validateObjectAndThrowException(authorizationDto.getAmount(), "id", HttpStatus.CONFLICT);
-		ValidatorHelper.validateStringAndThrowException(authorizationDto.getEstatus(), "estatus", HttpStatus.CONFLICT);		
-		ValidatorHelper.validateStringAndThrowException(authorizationDto.getDescription(), "description", HttpStatus.CONFLICT);
+
+		validate = ValidatorHelper.validateObjectAndThrowException(authorizationDto.getId(), "id", HttpStatus.CONFLICT);
+		validate = ValidatorHelper.validateObjectAndThrowException(authorizationDto.getAmount(), "amount", HttpStatus.CONFLICT);
+		validate = ValidatorHelper.validateStringAndThrowException(authorizationDto.getEstatus(), "estatus", HttpStatus.CONFLICT);		
+		validate = ValidatorHelper.validateStringAndThrowException(authorizationDto.getDescription(), "description", HttpStatus.CONFLICT);
+		
+		if(validate != null) {
+			return validate;
+		}
 		
 		authorizationDao.save(authorizationDto);
 			
@@ -58,12 +64,16 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		JsonObjectBuilder jsonObject = null;
 		Optional<AuthorizationDto> authorizationDtoOptional = null;
 		AuthorizationDto authorizationDto = null;
+		String validate = null;
 		
 		
 		//Validations
-		ValidatorHelper.validateObjectAndThrowException(authorizationDtoActualizado.getId(), "id", HttpStatus.CONFLICT);
+		validate = ValidatorHelper.validateObjectAndThrowException(authorizationDtoActualizado.getId(), "id", HttpStatus.CONFLICT);
 		
-
+		if(validate != null) {
+			return validate;
+		}
+		
         authorizationDtoOptional = authorizationDao.findById(authorizationDtoActualizado.getId());
 
         authorizationDto = ValidatorHelper.validateObjectOptional(authorizationDtoOptional);

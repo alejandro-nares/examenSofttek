@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Optional;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.http.HttpStatus;
 
 import com.softtek.authorization.transaction.commons.util.Constants;
-import com.softtek.authorization.transaction.commons.util.ServiceException;
 import com.softtek.authorization.transaction.model.dto.AuthorizationDto;
 
 import lombok.extern.log4j.Log4j;
@@ -19,8 +21,9 @@ public class ValidatorHelper {
     /**
      * Proposito: Validar si el objeto es nulo
      * 
-     * @author  alejandro.nares, Habil MX
-     * @version 1.0.0 - 22/07/2020
+     * @author  alejandro.nares
+     * @version 1.0.0 - 11/03/2021
+     * 
      * @param object - Objeto a evaluar
      * 
      * @return Boolean - Estatus del entity
@@ -42,21 +45,28 @@ public class ValidatorHelper {
      * @param httpStatus - Estatus de la petición realizada
      * 
      */
-    public static void validateObjectAndThrowException(Object param, String name, HttpStatus httpStatus) {
+    public static String validateObjectAndThrowException(Object param, String name, HttpStatus httpStatus) {
         log.debug(Constants.LOG_INICIO);
+        String result = null;
         String mensajeExcepcion = null;
+        JsonObjectBuilder jsonObject = null;
 
         if(Constants.VALUE_TRUE.equals(ValidatorHelper.isNullObject(param))){
+        	
             //SE OBTIENE EL MENSAJE DE EXCEPCION
             mensajeExcepcion = MessageFormat.format(Constants.MESSAGES_VALIDATION_EMPTY_NULL, name);
  
-            log.debug("mensajeExcepcion  ::  " + mensajeExcepcion);
-          throw new ServiceException(mensajeExcepcion, "400",httpStatus);
-//          throw new ServiceException(mensajeExcepcion);
+            log.debug("mensajeExcepcion  ::  " + mensajeExcepcion);            
+            jsonObject = Json.createObjectBuilder();
+    		jsonObject.add("message", mensajeExcepcion);
+    		jsonObject.add("code", Constants.CODE_ERROR_400);
+    		
+    		result = jsonObject.build().toString();
 
         }
-        
+
         log.debug(Constants.LOG_FIN);
+        return result;
     }
 
     
@@ -71,20 +81,27 @@ public class ValidatorHelper {
      * @param httpStatus - Estatus de la petición realizada
      *
      */
-    public static void validateStringAndThrowException(String value, String fieldName, HttpStatus httpStatus){
+    public static String validateStringAndThrowException(String value, String fieldName, HttpStatus httpStatus){
         log.debug(Constants.LOG_INICIO);
         String mensajeExcepcion = null;
+        JsonObjectBuilder jsonObject = null;
+        String result = null;
         
         if(GenericValidator.isBlankOrNull(value)){
         	
             //SE OBTIENE EL MENSAJE DE EXCEPCION
             mensajeExcepcion = MessageFormat.format(Constants.MESSAGES_VALIDATION_EMPTY_NULL, fieldName);
 
-            log.debug("mensajeExcepcion  ::  " + mensajeExcepcion);
-            throw new ServiceException(mensajeExcepcion, "400",httpStatus);
-//            throw new Exception(mensajeExcepcion, new NullPointerException(mensajeExcepcion),httpStatus);
+            log.debug("mensajeExcepcion  ::  " + mensajeExcepcion);            
+            jsonObject = Json.createObjectBuilder();
+    		jsonObject.add("message", mensajeExcepcion);
+    		jsonObject.add("code", Constants.CODE_ERROR_400);
+    		
+    		result = jsonObject.build().toString();
+            
         }
         log.debug(Constants.LOG_FIN);
+        return result;
     }
     
 
@@ -143,7 +160,7 @@ public class ValidatorHelper {
     */
    public static Boolean isNullOrEmptyString(String atributo) {
        
-       return atributo == null || atributo.isBlank();
+       return atributo == null || atributo.isEmpty();
    }
 
    /**

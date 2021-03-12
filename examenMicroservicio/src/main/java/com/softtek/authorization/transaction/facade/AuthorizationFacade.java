@@ -1,6 +1,7 @@
 package com.softtek.authorization.transaction.facade;
 
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 
+import org.hibernate.service.spi.ServiceException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @Service
 @Component
-public class AutorizacionTransaccionFacade {
+public class AuthorizationFacade {
 
     @Autowired private ModelMapper modelMapper;
 	@Autowired private AuthorizationServiceImpl authorizationServiceImpl;
@@ -49,14 +51,24 @@ public class AutorizacionTransaccionFacade {
         log.debug(Constants.LOG_INICIO);
 
         String result = null; 
-        AuthorizationDto authorizationDto = new AuthorizationDto();
+        AuthorizationDto authorizationDto = null;
+        String validate = null;
         
-        ValidatorHelper.validateObjectAndThrowException(authorizationDto, "authorizationVo", HttpStatus.CONFLICT);
+        validate = ValidatorHelper.validateObjectAndThrowException(authorizationVo, "authorizationVo", HttpStatus.CONFLICT);
+        
+        if(validate != null) {
+			return validate;
+		}
         
         authorizationDto = this.authorizationVoToauthorizationDto(authorizationVo);
         
-        
-		result = authorizationServiceImpl.saveAutorization(authorizationDto);
+        try {
+
+    		result = authorizationServiceImpl.saveAutorization(authorizationDto);
+    		
+        }catch (ServiceException serviceException) {
+			throw serviceException;
+		}
 		
         return result;
     }
@@ -76,9 +88,14 @@ public class AutorizacionTransaccionFacade {
         String result = null; 
         AuthorizationDto authorizationDto = new AuthorizationDto();
 
-
+        String validate = null;
+        
         //VALIDACIONES
-        ValidatorHelper.validateObjectAndThrowException(authorizationVo, "mailVo", HttpStatus.CONFLICT);
+        validate = ValidatorHelper.validateObjectAndThrowException(authorizationVo, "authorizationVo", HttpStatus.CONFLICT);
+        
+        if(validate != null) {
+			return validate;
+		}
 
         authorizationDto = this.authorizationVoToauthorizationDto(authorizationVo);
         
@@ -99,7 +116,7 @@ public class AutorizacionTransaccionFacade {
      * @param authorizationVo Information to recover transaction autorization.
      * @return String Response of the service
      */
-	public String recoverAutorizationWhithId(Integer id) {
+	public String findAutorizationWhithId(Integer id) {
         log.debug(Constants.LOG_INICIO);
 
         List<AuthorizationVo> listAuthorizationVo = null; 
@@ -237,6 +254,19 @@ public class AutorizacionTransaccionFacade {
 
         log.debug(Constants.LOG_FIN);
         return authorizationVo;
+    }
+    
+
+    public BigDecimal sumarListaNumeros(List<BigDecimal> listBigDecimal) {
+        log.debug(Constants.LOG_INICIO);
+        BigDecimal suma = new BigDecimal(0);
+        
+        for(BigDecimal number : listBigDecimal) {
+        	suma = suma.add(number);
+        }
+        
+        log.debug(Constants.LOG_FIN);
+        return suma;
     }
     
 }
