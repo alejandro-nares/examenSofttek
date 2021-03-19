@@ -1,7 +1,6 @@
 package com.softtek.authorization.transaction.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.softtek.authorization.transaction.model.dto.AuthorizationDto;
 

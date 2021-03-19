@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.softtek.authorization.transaction.commons.util.ServiceException;
 import com.softtek.authorization.transaction.commons.vo.AuthorizationVo;
 
 import lombok.extern.log4j.Log4j;
@@ -22,7 +21,7 @@ public class AuthorizationFacadeTest {
 	@Autowired AuthorizationFacade authorizationFacade;
 	
 	@Test
-	public void saveAutorization() throws ServiceException {
+	public void saveAutorization() {
 		String response = null;
 		
 		AuthorizationVo authorizationVo = new AuthorizationVo();
@@ -39,7 +38,7 @@ public class AuthorizationFacadeTest {
 	}
 	
 	@Test
-	public void updateAutorization() throws ServiceException {
+	public void updateAutorization() {
 		String response = null;
 		
 		AuthorizationVo authorizationVo = new AuthorizationVo();
@@ -54,7 +53,7 @@ public class AuthorizationFacadeTest {
 	}
 	
 	@Test
-	public void updateAutorizationIdInvalid() throws ServiceException {
+	public void updateAutorizationIdInvalid() {
 		String response = null;
 		
 		AuthorizationVo authorizationVo = new AuthorizationVo();
